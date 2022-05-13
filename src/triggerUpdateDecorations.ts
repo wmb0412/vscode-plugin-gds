@@ -33,7 +33,7 @@ function updateDecorations(activeEditor: any, globalData: any) {
         return;
     }
     const hexReg = /(#(([0-9a-f]){6}|([0-9a-f]){3}))|(rgb\(\d{1,3}\,\ *\d{1,3}\,\ *\d{1,3}\))/ig;
-    const regStr = Object.keys(globalData).sort((a,b) => b.localeCompare(a)).join(')|(').split('$').join('').split('-').join('\\-');
+    const regStr = Object.keys(globalData).sort((a,b) => b.localeCompare(a)).join(')|(').split('$').join('\\${0,1}').split('-').join('\\-');
     const tokenReg = RegExp(`(${regStr})`, 'g');
     const text=activeEditor.document.getText();
     const smallNumbers: vscode.DecorationOptions[]=[];
@@ -65,9 +65,12 @@ function updateDecorations(activeEditor: any, globalData: any) {
     while ((match=tokenReg.exec(text))) {
         const startPos=activeEditor.document.positionAt(match.index);
         const endPos=activeEditor.document.positionAt(match.index+match[0].length);
-        const colorText='$'+ match[0];
+        const colorText= match[0].startsWith('$') ? match[0]: '$'+ match[0];
         if(globalData[colorText] && isColor(globalData[colorText]) ){
             const decoration={ range: new vscode.Range(startPos, endPos), hoverMessage: `${tokenUrl} * ${globalData[colorText]}` };
+            smallNumbers.push(decoration);
+        }else{
+            const decoration={ range: new vscode.Range(startPos, endPos), hoverMessage: globalData[colorText] };
             smallNumbers.push(decoration);
         }
         
