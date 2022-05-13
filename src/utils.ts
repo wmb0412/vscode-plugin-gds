@@ -20,11 +20,12 @@ const doComplete = (content:string) => {
     });
     return output;
 };
+const defaultConfig = ["node_modules\/@guandata\/gds\/scss\/light\/_colors.scss","node_modules\/@guandata\/gds\/scss\/light\/_utils.scss"]
 export const initGlobalData = () => {
   let globalData = {};
 	const workspaceFolder = vscode.workspace.workspaceFolders || [];
 	const config = vscode.workspace.getConfiguration('scssToken');
-	const filesToLookup = (config.get('global') || ["node_modules\/@guandata\/gds\/scss\/light\/_colors.scss"]) as string[];
+	const filesToLookup = (config.get('global') || defaultConfig) as string[];
 	const folderPath = workspaceFolder[0].uri.fsPath;
 
 	filesToLookup.forEach((relativePath) => {

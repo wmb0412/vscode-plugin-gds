@@ -5,7 +5,8 @@ import * as path from 'path';
 import * as fs from 'fs';
 import { initGlobalData, findSync } from './utils';
 import completionItems from './completionItems';
-import hoverProvider from './hoverProvider';
+// import hoverProvider from './hoverProvider';
+import triggerUpdateDecorations from './triggerUpdateDecorations';
 import commandScssTokenFormat from './commandScssTokenFormat';
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
@@ -13,9 +14,11 @@ let globalData = {};
 
 export function activate(context: vscode.ExtensionContext) {
 	globalData = initGlobalData();
+	console.log('globalData', globalData)
+	let activeEditor = vscode.window.activeTextEditor;
 	//自动补全
 	const provider1 = vscode.languages.registerCompletionItemProvider(
-		['scss'],
+		['scss', 'js'],
 		{
 			async provideCompletionItems(document, position, token, context) {
 				return completionItems(globalData);
@@ -23,9 +26,9 @@ export function activate(context: vscode.ExtensionContext) {
 		}, ':', ': ', ':$', ': $'
 	);
 	//悬浮提示
-	const provider2 = vscode.languages.registerHoverProvider('scss', {
-		provideHover: (document, position, token) => hoverProvider(document, position, token, globalData)
-	});
+	// const provider2 = vscode.languages.registerHoverProvider('scss', {
+	// 	provideHover: (document, position, token) => hoverProvider(document, position, token, globalData)
+	// });
 	//文件内容替换
 	let disposable = vscode.commands.registerCommand('scssTokenFormat', (url, scssPaths) =>
 		commandScssTokenFormat(globalData, url, scssPaths));
@@ -35,9 +38,24 @@ export function activate(context: vscode.ExtensionContext) {
 		vscode.commands.executeCommand('scssTokenFormat', { path: scssPaths.shift() }, scssPaths);
 	});
 	context.subscriptions.push(provider1);
-	context.subscriptions.push(provider2);
+	// context.subscriptions.push(provider2);
 	context.subscriptions.push(disposable);
 	context.subscriptions.push(disposable2);
+	if (activeEditor) {
+		triggerUpdateDecorations(false, activeEditor, globalData);
+	}
+	vscode.window.onDidChangeActiveTextEditor(editor => {
+		activeEditor = editor;
+		if (editor) {
+			triggerUpdateDecorations(false, activeEditor, globalData);
+		}
+	}, null, context.subscriptions);
+
+	vscode.workspace.onDidChangeTextDocument(event => {
+		if (activeEditor && event.document === activeEditor.document) {
+			triggerUpdateDecorations(true, activeEditor, globalData);
+		}
+	}, null, context.subscriptions);
 }
 
 // this method is called when your extension is deactivated

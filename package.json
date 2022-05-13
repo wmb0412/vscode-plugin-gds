@@ -54,7 +54,18 @@
 					"group": "navigation"
 				}
 			]
-		}
+		},
+		"colors": [
+			{
+				"id": "myextension.gdsToken",
+				"description": "Background decoration color for large numbers",
+				"defaults": {
+					"dark": "#ddd",
+					"light": "#fff",
+					"highContrast": "#fff"
+				}
+			}
+		]
 	},
 	"scripts": {
 		"vscode:prepublish": "yarn run compile",
