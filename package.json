@@ -2,7 +2,7 @@
 	"name": "scss-token",
 	"displayName": "scss-token",
 	"description": "guandata/gds",
-	"version": "0.0.1",
+	"version": "0.0.5",
 	"author": "wangmingbao <353685720@qq.com>",
 	"repository": {
 		  "type": "git",
@@ -12,6 +12,7 @@
 		  "guandata",
 		  "gds"
 	],
+	"icon": "icon.png",
 	"publisher": "wangmingbao",
 	"engines": {
 		  "vscode": "^1.52.0"
