@@ -4,7 +4,7 @@ gds地址：https://demo.guandata.com/gds/develop/design-tokens
     ![demo img](https://github.com/wmb0412/vscode-plugin-gds/blob/master/src/resources/141646730313_.pic.jpg?raw=true)
     ![demo img](https://github.com/wmb0412/vscode-plugin-gds/blob/master/src/resources/131646730290_.pic.jpg?raw=true)
 2. 自动补全
-    ![demo img](https://github.com/wmb0412/vscode-plugin-gds/blob/master/src/resources/1.pic.jpg?raw=true)
+    ![demo img](/src/resources/completion.gif)
 3. 悬浮提示 颜色=> token， token=>颜色
     ![demo img](https://github.com/wmb0412/vscode-plugin-gds/blob/master/src/resources/121646730180_.pic.jpg?raw=true)
     ![demo img](https://github.com/wmb0412/vscode-plugin-gds/blob/master/src/resources/111646730158_.pic.jpg?raw=true)
