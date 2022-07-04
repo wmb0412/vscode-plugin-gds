@@ -4,6 +4,7 @@ import * as Color from 'color';
 import { getColorText } from './utils';
 export default async (globalData: any, url: { path: string }, scssPaths: string[]) => {
     const doc = await vscode.workspace.openTextDocument(url.path);
+    console.log(globalData,'globalData')
     await vscode.window.showTextDocument(doc, { preview: true });
     vscode.window.activeTextEditor?.edit(async editBuilder => {
         const countLine = vscode.window.activeTextEditor?.document.lineCount as number;
@@ -16,12 +17,16 @@ export default async (globalData: any, url: { path: string }, scssPaths: string[
             }
             let tokencolor = '';
             for (const key in globalData) {
-                if (Object.prototype.hasOwnProperty.call(globalData, key)) {
-                    const element = globalData[key];
-                    if (Color(element).hex() === Color(value).hex()) {
-                        tokencolor = key;
+                try {
+                    if (Object.prototype.hasOwnProperty.call(globalData, key)) {
+                        const element = globalData[key];
+                        if (Color(element).hex() === Color(value).hex()) {
+                            tokencolor = key;
+                        }
+    
                     }
-
+                } catch (error) {
+                    
                 }
             }
             if (tokencolor) {
