@@ -65,14 +65,17 @@ function updateDecorations(activeEditor: any, globalData: any) {
     while ((match=tokenReg.exec(text))) {
         const startPos=activeEditor.document.positionAt(match.index);
         const endPos=activeEditor.document.positionAt(match.index+match[0].length);
-        const colorText= match[0].startsWith('$') ? match[0]: '$'+ match[0];
-        if(globalData[colorText] && isColor(globalData[colorText]) ){
-            const decoration={ range: new vscode.Range(startPos, endPos), hoverMessage: `${tokenUrl} * ${globalData[colorText]}` };
-            smallNumbers.push(decoration);
-        }else{
-            const decoration={ range: new vscode.Range(startPos, endPos), hoverMessage: globalData[colorText] };
-            smallNumbers.push(decoration);
-        }
+        const colorText= match[0]
+        // if(globalData[colorText] && isColor(globalData[colorText]) ){
+        //     const decoration={ range: new vscode.Range(startPos, endPos), hoverMessage: `${tokenUrl} * ${globalData[colorText]}` };
+        //     smallNumbers.push(decoration);
+        // }else{
+        //     console.log('globalData[colorText]', globalData[colorText])
+        //     const decoration={ range: new vscode.Range(startPos, endPos), hoverMessage: globalData[colorText] };
+        //     smallNumbers.push(decoration);
+        // }
+        const decoration={ range: new vscode.Range(startPos, endPos), hoverMessage: `${tokenUrl} * ${globalData[colorText]}` };
+        smallNumbers.push(decoration);
         
     }
     activeEditor.setDecorations(smallNumberDecorationType, smallNumbers);

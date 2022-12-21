@@ -2,7 +2,7 @@
 	"name": "gds",
 	"displayName": "gds",
 	"description": "guandata/gds",
-	"version": "0.0.2",
+	"version": "0.2.0",
 	"author": "wangmingbao <353685720@qq.com>",
 	"repository": {
 		  "type": "git",
@@ -25,37 +25,6 @@
 	],
 	"main": "./out/extension.js",
 	"contributes": {
-		"commands": [
-			{
-				"command": "scssTokenFormat",
-				"title": "format to token"
-			},
-			{
-				"command": "mutil-scssTokenFormat",
-				"title": "mutil format to token"
-			}
-		],
-		"menus": {
-			"editor/context": [
-				{
-					"when": "editorFocus",
-					"command": "scssTokenFormat",
-					"group": "navigation"
-				}
-			],
-			"explorer/context": [
-				{
-					"when": "resourceExtname == .scss",
-					"command": "scssTokenFormat",
-					"group": "navigation"
-				},
-				{
-					"when": "explorerResourceIsFolder",
-					"command": "mutil-scssTokenFormat",
-					"group": "navigation"
-				}
-			]
-		},
 		"colors": [
 			{
 				"id": "myextension.gdsToken",

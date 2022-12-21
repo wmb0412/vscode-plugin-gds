@@ -1,42 +1,46 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
 import * as fs from 'fs';
-import {
-    getSCSSLanguageService,
-    TextDocument,
-  } from 'vscode-css-languageservice';
-import { Symbols } from 'vscode-css-languageservice/lib/umd/parser/cssSymbolScope.js';
 
-const doComplete = (content:string) => {
-    const output:any = [];
-    const service = getSCSSLanguageService();
-
-    const styleSheet = service.parseStylesheet(
-      TextDocument.create('', 'scss', 0, content)
-    );
-    const symbolContext = new Symbols(styleSheet);
-    symbolContext.global.symbols.forEach((symbol: any) => {
-        output[symbol.name]=symbol.value;
-    });
-    return output;
-};
-const defaultConfig = ["node_modules\/@guandata\/gds\/scss\/light\/_colors.scss","node_modules\/@guandata\/gds\/scss\/light\/_utils.scss"]
+const getAllClassInCss = (content: string) => {
+  return content.match(/(?:[\.]{1})([a-zA-Z_]+[\w-_]*)(?:[\s\.\,\{\>#\:]{0})/igm)?.reduce((pre, item) => ({
+    ...pre,
+    [item.slice(1)]: getClassBody(item.slice(1), content)
+  }), {}) || {}
+}
+const getClassBody = (className: string, content: string) => {
+    // const reg = new RegExp(`(.${className}).*?(?=\})`, 'g')
+    const reg = new RegExp(`(\\.${className}([\\,\\{]+)).*?(?=\\})`, 'g')
+  return `{${content.match(reg)?.map(item => item.split('{')[1]).join(',')} }`
+}
+const defaultConfig = ["node_modules\/@guandata\/gds\/scss\/light\/_colors.scss","node_modules\/@guandata\/gds\/scss\/light\/_utils.scss"];
+const cssConfig = 'node_modules\/@guandata\/gds\/index.css'
 export const initGlobalData = () => {
   let globalData = {};
 	const workspaceFolder = vscode.workspace.workspaceFolders || [];
-	const config = vscode.workspace.getConfiguration('scssToken');
-	const filesToLookup = (config.get('global') || defaultConfig) as string[];
+	// const config = vscode.workspace.getConfiguration('scssToken');
+	// const filesToLookup = (config.get('global') || defaultConfig) as string[];
 	const folderPath = workspaceFolder[0].uri.fsPath;
 
-	filesToLookup.forEach((relativePath) => {
+	defaultConfig.forEach((relativePath) => {
 		const content = fs.readFileSync(path.join(folderPath, relativePath), {
 		encoding: 'utf8',
 		});
-		const fileGlobalData = doComplete(content);
-    globalData = {...globalData,...fileGlobalData};
+    const fileGlobalData = content.replace(/\n| /g, '').split(';').filter(item => item.includes(':')).reduce((pre, str) => ({ ...pre, [str.split(':')[0].slice(1)]: str.split(':')[1]}) , {})
+
+    globalData = {...globalData, ...fileGlobalData };
 	});
+  
+  const cssContent = fs.readFileSync(path.join(folderPath, cssConfig), {
+		encoding: 'utf8',
+		}).replace(/\/\*.*?\*\//g, '')
+  globalData = {
+    ...globalData,
+    ...getAllClassInCss(cssContent)
+  }
   return globalData;
 };
+
 
 export const findSync = (startPath:string) => {
   const result:string[]=[];
@@ -65,3 +69,13 @@ export const getColorText = (colorString:string):string => {
   return result?result[0]:'';
 };
 
+async function readFile(file: string): Promise<string> {
+  return new Promise<string>((resolve, reject) => {
+      fs.readFile(file, (err, data) => {
+          if (err) {
+              reject(err);
+          }
+          resolve(data.toString());
+      });
+  });
+}
