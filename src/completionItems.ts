@@ -16,11 +16,12 @@ function colorRGBtoHex(color:string) {
 }
 const splitChar = ' ';
 const classMatchRegex = /className=["|']([\w- ]*$)/;
+const cnMatchRegex = /cn(\(\')([\w- ]*$)/;
 export default function (globalData: any, document: any, position: any, inScss?:boolean): vscode.CompletionItem[] {
         const start = new vscode.Position(position.line, 0);
         const range = new vscode.Range(start, position);
         const text: string = document.getText(range);
-        const rawClasses: RegExpMatchArray | null = text.match(classMatchRegex);
+        const rawClasses: RegExpMatchArray | null = text.match(classMatchRegex) || text.match(cnMatchRegex);
         if (!inScss && (!rawClasses || rawClasses.length === 1)) {
             return [ ];
         }

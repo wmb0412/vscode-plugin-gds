@@ -2,7 +2,7 @@
 	"name": "gds",
 	"displayName": "gds",
 	"description": "guandata/gds",
-	"version": "0.2.0",
+	"version": "0.2.3",
 	"author": "wangmingbao <353685720@qq.com>",
 	"repository": {
 		  "type": "git",
